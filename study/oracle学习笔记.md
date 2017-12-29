@@ -253,4 +253,5 @@
 ```
     regexp_replace(ename, '[aeiou]')
 ```
-#### 
+
+#### 43.oracle 中没有top limit关键字（很绝望） 
