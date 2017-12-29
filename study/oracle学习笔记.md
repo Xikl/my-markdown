@@ -36,7 +36,12 @@
 #### 14.translate() 函数
     SELECT translate('ab 你好 bcdef', 'abcdef', '123456') as new_str from dual;
     to_string 不能为空， 为空 将没有意义
-	from_string与to_string 按顺序一一对应, 若后面的没有那么则为空 
+	from_string与to_string 按顺序一一对应, 若后面的没有那么则为空
+
+    SELECT translate('clack,king,meiller,s', ',' || 'clack,king,meiller,s', ',') as str FROM dual
+- 分析可得 凡是 ',' 的位置都被替换为',' 其他的部分由于没有值，则为空，   
+- 结果为',,,'
+
 #### 15.字符串拼接函数 || conact()的异同 
     -concat 只能连接两个字符， 如果有需要需要嵌套 concat(str1, concat(str2, str3)). 
     - || 可以随意拼接，没有限制
@@ -205,3 +210,47 @@
     DELETE FROM MY_USER WHERE ROWID IN (
     SELECT rid from (SELECT ROWID as rid, row_number() OVER (PARTITION BY USERNAME ORDER BY HEIGHT ASC ) seq FROM MY_USER)
     WHERE seq > 1)
+#### 37.oracle中LEVEL的使用, 用于遍历字符串 level <= (str)
+    SELECT LEVEL from dual CONNECT BY LEVEL <= 4;
+    SELECT LEVEL, substr('天天向上', LEVEL, 1) as fun FROM dual CONNECT BY LEVEL <= length('天天向上');
+#### 38. oracle 中字符串中保留单引号
+    SELECT 'g''day mate' qmarks FROM dual UNION ALL
+    SELECT 'beavers'' teeth' FROM dual UNION ALL
+    SELECT '''' FROM dual
+       str
+    1  g'day mate
+    2  beavers' teeth
+    3  '
+#### 39. oracle中q-quote的使用
+- 界定符可以是tab，空格，回车外的任何单字节或者多字节字符
+- 界定符可以是\[], {}, <>, ()且必须成对出现
+```
+    SELECT q'[']' FROM dual
+```
+
+#### 40.oracle中regexp_count() 注：11g特有的函数 dataGrip会标黄
+    SELECT regexp_count(str, ',') + 1 as count FROM 
+    (SELECT 'clack,king,meiller' as str from dual)
+#### 41.oracle中字符串中有多个分隔符时， 使用translate要 除以 分隔符的长度
+    SELECT length(translate(str, '$#' || str, '$#')) / length('$#') + 1 as count from (SELECT 'ab$#sss$#dsa' as str FROM dual)
+- 使用 regexp_count() 来分割，就不需要注意分隔符的长度
+```
+    SELECT regexp_count(str, '\$#') + 1 as count FROM
+    (SELECT 'ab$#sss$#dsa' as str FROM dual)
+```
+
+#### 42.删除字符串中不需要的值
+- 如现在需要删除名字中的aeiou 元音值
+    + 一般做法
+``` 
+    replace(translate(ename, 'aeiou', 'aaaaa'), 'a', '')
+```
+    + 进阶做法 不需要嵌套
+```
+    translate(ename, '1aeiou', '1')
+```
+    + 正则方法 将所要替换的值置为空
+```
+    regexp_replace(ename, '[aeiou]')
+```
+#### 
