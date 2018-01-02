@@ -298,18 +298,18 @@
       FROM MY_USER;
 ```
 
-#### oracle中 instr的用法
+#### 48.oracle中 instr的用法
 - 可以使用instr函数对某个字符串进行判断，判断其是否含有指定的字符。 
 - instr(sourceString,destString,start,appearPosition) 
 - instr（'源字符串' , '目标字符串' ,'开始位置','第几次出现'） 
 
-#### oracle中regexp_substr的用法
+#### 49.oracle中regexp_substr的用法
 - regexp_substr(name, '\[^,]+', 1, 2)
     + 其中参数2： '\[^,]+'表示匹配多个非','一次或者多次
     + 参数3： 1表示从位置1开始
     + 参数4： 2表示下一个匹配的字符串
 
-#### oracle 中level关键字的用法 伪列 1，2, 3，4，5……
+#### 50.oracle 中level关键字的用法 伪列 1，2, 3，4，5……
     SELECT DBMS_RANDOM.VALUE, level
        FROM dual
       CONNECT BY LEVEL < 10
@@ -324,4 +324,20 @@
       FROM (SELECT 'username' my_name from dual)
     CONNECT BY LEVEL <= length(my_name)
     GROUP BY my_name
+```
+- 使用 listagg level min 几个关键字来实现 去重 排序
+```
+     SELECT USERNAME, (
+      SELECT LISTAGG(MIN(SUBSTR(USERNAME, LEVEL, 1))) WITHIN GROUP (ORDER BY MIN(SUBSTR(USERNAME, LEVEL, 1)))
+        FROM DUAL
+      CONNECT BY LEVEL <= LENGTH(USERNAME) GROUP BY SUBSTR(USERNAME, LEVEL, 1)
+    ) AS NEW_NAME
+      FROM MY_USER;
+```
+
+#### 51.判断可以使用可以作为数字的字符串 TRANSLATE, is not null
+```
+    SELECT TO_NUMBER(MIXED) AS MIXED FROM (
+      SELECT TRANSLATE(MIXED, '0123456789' || MIXED, '0123456789') AS MIXED FROM TEST
+    ) WHERE MIXED IS NOT NULL 
 ```
