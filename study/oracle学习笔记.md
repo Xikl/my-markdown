@@ -22,8 +22,10 @@
 #### 9.dbms_random.value() 去随机值
 #### 10. 正确的取随机行的方法   --正确 （先随机取数， 然后再取出来 ）
 	SELECT USER_ID, PWD FROM (select USER_ID, pwd FROM MY_USER ORDER BY dbms_random.value()) WHERE ROWNUM < = 3;
-#### 11.substr(USERNAME, -2) 
-    截取字符 -2表示倒着截取两位
+#### 11.oracle中substr的用法
+- substr(字符串,截取开始位置,截取长度)
+- substr(USERNAME, -2，1) 截取字符 -2表示从倒数第二的位置截取 1 表示 截取长度为1
+
 #### 12.int 和 number 、Integer的异同 
     - oracle 中本来就没有int类型，只是为了和别的数据库进行兼容，
 	- int相当于number(22)
@@ -255,3 +257,71 @@
 ```
 
 #### 43.oracle 中没有top limit关键字（很绝望） 
+# 新的一天 新的开始 2018-01-02
+#### 44.oracle中正则表达式的使用 regexp_replace
+    regexp_replace(data, '[0-9]', '');
+- 此处代表替换非字符串 也可以用translate关键字
+
+#### 45.oracle 中的 regexp_like
+- regexp_like(data, '\[abc]') 相当于(like or %a% or like %b% or like %c%);
+- regexp_like(data, '^a')相当于 like 'a%'没有了前模糊查询
+- regexp_like(data, 'a$')相当于 like '%a' 没有了后模糊查询
+- regexp_like(data, '^a$')相当于 like 'a' 没有了模糊查询 精准查询a
+- regexp_like(data, '\[0-9a-zA-Z]+')相当于(like or %数字% or like %小写字母% or like %大写字母%);
+- ^\[0-9a-zA-Z]+$ 其中^ 在[]外表示字符串开始，$ 表示字符串结束
+- \[^0-9]表示非数字 ^ 在[]里面表示非
+- 正则表达式中
+    + '+'表示匹配前面的式子一次或者多次，如regexp_like(data, '16+')相当于like 16%
+    + '\*'表示匹配前面的式子零次或者多次，如regexp_like(data, '16*')相当于like 1%
+
+#### 46.oracle中如果想要用字符串中的数字进行排序，那么方法就是先用regexp_replace(data, '\[^0-9]', '')或者translate(data, '0123456789' || data, '0123456789') 将非数字替换为''
+
+#### 47.oracle中listagg用法
+    SELECT ID, listagg(NAME, ',') within group(ORDER BY ID) AS NAMES
+      FROM DEMO T 
+     GROUP BY ID
+- 具体请参见 http://blog.csdn.net/baojiangfeng/article/details/62237522
+- 具体请参见 oracle查询优化改写 P106的部分
+- 分析 ORDER BY USERNAME DESC 中表示 里面按照 名字的降序来排列 如 B,C,D
+- 以pwd 密码为分组，将密码相同的人的名字放在一起，很实用的方法
+```
+    SELECT PWD, listagg(username, ',') WITHIN GROUP(ORDER BY USERNAME DESC) as new_name FROM MY_USER GROUP BY PWD 
+```
+- listagg的高级用法 和 level来使用
+    + 将my_user中的username 去重 加排序
+```
+    SELECT USERNAME, (
+      SELECT LISTAGG(MIN(SUBSTR(USERNAME, LEVEL, 1))) WITHIN GROUP (ORDER BY MIN(SUBSTR(USERNAME, LEVEL, 1)))
+        FROM DUAL
+      CONNECT BY LEVEL <= LENGTH(USERNAME) GROUP BY SUBSTR(USERNAME, LEVEL, 1)
+    ) AS NEW_NAME
+      FROM MY_USER;
+```
+
+#### oracle中 instr的用法
+- 可以使用instr函数对某个字符串进行判断，判断其是否含有指定的字符。 
+- instr(sourceString,destString,start,appearPosition) 
+- instr（'源字符串' , '目标字符串' ,'开始位置','第几次出现'） 
+
+#### oracle中regexp_substr的用法
+- regexp_substr(name, '\[^,]+', 1, 2)
+    + 其中参数2： '\[^,]+'表示匹配多个非','一次或者多次
+    + 参数3： 1表示从位置1开始
+    + 参数4： 2表示下一个匹配的字符串
+
+#### oracle 中level关键字的用法 伪列 1，2, 3，4，5……
+    SELECT DBMS_RANDOM.VALUE, level
+       FROM dual
+      CONNECT BY LEVEL < 10
+- level中将username 拆分为单个字符
+```
+    SELECT my_name, substr(my_name, level, 1) as c FROM (SELECT 'username' as my_name FROM dual)
+    CONNECT BY LEVEL < =length(my_name)
+```
+- 使用listagg讲这些字符连接起来
+```
+    SELECT my_name, listagg(substr(my_name, level, 1)) WITHIN GROUP(ORDER BY substr(my_name, level, 1)) as new_name
+      FROM (SELECT 'username' my_name from dual)
+    CONNECT BY LEVEL <= length(my_name)
+    GROUP BY my_name
+```
