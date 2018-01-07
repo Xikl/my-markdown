@@ -21,3 +21,14 @@
 #### 8.删除文件
     git rm test.txt
 - 进行这个操作默认为 就提交了 比我们自己手动删除 在add . 然后commit 要方便一点
+
+#### 9.强制 上传 
+- 错误原因
+    + 情景：
+    在github上创建项目，然后本地git init
+    然后没有git pull -f --all
+    然后git add .  | git commit -am "init"
+    导致github上的版本里有readme文件和本地版本冲突，下面给出冲突原因：
+```
+    git push -u origin master -f 
+```
