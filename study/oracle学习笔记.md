@@ -276,7 +276,7 @@
 
 #### 46.oracle中如果想要用字符串中的数字进行排序，那么方法就是先用regexp_replace(data, '\[^0-9]', '')或者translate(data, '0123456789' || data, '0123456789') 将非数字替换为''
 
-#### 47.oracle中listagg用法
+#### 47.oracle中listagg（） with group（）用法
     SELECT ID, listagg(NAME, ',') within group(ORDER BY ID) AS NAMES
       FROM DEMO T 
      GROUP BY ID
@@ -339,4 +339,95 @@
     SELECT TO_NUMBER(MIXED) AS MIXED FROM (
       SELECT TRANSLATE(MIXED, '0123456789' || MIXED, '0123456789') AS MIXED FROM TEST
     ) WHERE MIXED IS NOT NULL
-#### 52.
+#### 52.oracle中使用spring data jpa
+```
+     /** 创建时间*/
+    @Column(updatable = false)
+    private Date createTime;
+    /** 修改时间*/
+    private Date modifiedTime;
+```
+- 1. 创建时间不更新  添加注解@Column(updatable = false)
+- 2. @DynamicInsert 和 @DynamicUpdate注解的使用 
+    + @DynamicInsert 前者如果这个字段的值是null就不会加入到insert语句当中.默认false。
+    @DynamicInsert注解下Hibernate日志打印SQL：
+    ```
+        Hibernate: insert into Cat (cat_name, id) values (?, ?)  
+        反之
+        Hibernate: insert into Cat (create_time, update_time, cat_name, id) values (?, ?, ?, ?)  
+    ```
+    + @DynamicUpdate
+    @DynamicUpdate注解下Hibernate日志打印SQL：
+    说明：如果字段有更新，Hibernate才会对该字段进行更新
+    ```
+        Hibernate: update Cat set update_time=? where id=?
+        反之 说明：不管字段有没有更新，Hibernate都会对该字段进行更新
+        Hibernate: update Cat set update_time=?, cat_name=? where id=?  
+    ```
+
+### 第六章 使用数字
+#### 6.1 常用的聚集函数
+    AVG(sal), min(sal), max(sal), sum(sal), count(*)
+#### 6.2 sum() over() 累计求和
+    select empno as 员工编号, sal as 人工成本,  SUM(sal) over(order by empno) as 成本累计 from emp where deptno = 30 order by empno;
+#### 6.3 with x as ()
+#### 6.4 rank over () 可以实现对学生排名，特点是成绩相同的两名是并列，如下1 2 2 4 5 
+- 详情看 http://www.linuxidc.com/Linux/2015-04/116349.htm
+```
+    select name,
+      course,
+      rank() over(partition by course order by score desc) as rank
+    from student;
+```
+
+#### 6.5 dense_rank()和rank over()很像，但学生成绩并列后并不会空出并列所占的 名次，如下1 2 2 3 4
+```
+    select name,
+        course,
+        dense_rank() over(partition by course order by score desc) as rank
+    from student;
+```
+- 取的工资排名中前三的用户
+```
+    SELECT *
+    FROM (SELECT
+            deptno,
+            empno,
+            sal,
+            dense_rank()
+            OVER (
+              PARTITION BY course
+              ORDER BY sal DESC ) AS dens_rank
+          FROM emp
+          WHERE deptno IN (19, 30)
+    )
+    WHERE dens_rank <= 3;
+```
+
+#### 6.6 oracle 中max 的用法 
+- 不仅可以用于 数字类型 还可以用于 字符串 以及 日期类型
+
+#### 6.7 kepp(dense_rank() last/first order by amount)
+- 分析函数 
+```
+    SELECT
+      project,
+      min(amount) AS min_amount,
+      max(project)
+      KEEP (DENSE_RANK FIRST
+      ORDER BY amount) max
+      FROM test_detail
+      GROUP BY project;
+```
+
+#### 6.8 first_value() last_value()
+#### 6.9 sum() over() 
+- 其中 over 中 啥也不写 就是 对所有的值得汇总 
+- 如： select sum_sal, sum(sum_sal) over()
+
+#### 6.10 round() 函数
+round((a / b) * 100, 2) || '%'  =>30.14%
+```
+    select deptno, empno, sal, round(ratio_to_report(sal) over(partition by deptno) * 100, 2) as amount_rate from emp order by deptno, empno;
+```
+#### 6.11 trunc(dbms.random.value(1, 7)) 取整函数 对1到7的随机值进行直接取整， 不取舍。
