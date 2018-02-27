@@ -168,6 +168,7 @@ select a.*, b.* from a right join b
     WHERE NOT exists(SELECT null 或者 1 FROM MY_USER_BONUS d WHERE d.user_id = t.USER_ID)
 ```
 
+-- 笔记 回顾 到这里
 #### 26.oracle 中表的复制有两种方法
 ##### *将test复制到test2中， 整张表复制，数据加结构
     CREATE TABLE test2 as SELECT * from test;
