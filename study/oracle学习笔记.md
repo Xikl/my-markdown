@@ -37,6 +37,7 @@
 *注意 时间 格式化 秒的部分是 mi 不是像java中的mm 其中 || 是sql中字符拼接* 
 #### 14.translate() 函数
     SELECT translate('ab 你好 bcdef', 'abcdef', '123456') as new_str from dual;
+    分析：a被1替代，b被2替代，依次类推 => 结果为 12你好3456
     to_string 不能为空， 为空 将没有意义
 	from_string与to_string 按顺序一一对应, 若后面的没有那么则为空
 
@@ -52,8 +53,10 @@
 #### 17.NULLS FIRST/LAST
     根据NULLS FIRST/LAST 来排序空值 ，当然你要对空值那一列进行order by,对没有空值的列进行排序然后进行NULLS FIRST或者FIRST 那将毫无意义
 #### 18.oracle中插入多条 
-    INSERT ALL INTO MY_USER (USERNAME, PWD, HEIGHT, GENDER) VALUES ('ximo', '12', '151', '0')
-    INTO MY_USER(USERNAME, PWD, HEIGHT, GENDER) VALUES ('mmm', '180', '4444', '1') SELECT 1 from dual;
+    INSERT ALL 
+    INTO MY_USER (USERNAME, PWD, HEIGHT, GENDER) VALUES ('ximo', '12', '151', '0')
+    INTO MY_USER(USERNAME, PWD, HEIGHT, GENDER) VALUES ('mmm', '180', '4444', '1') 
+    SELECT 1 from dual;
 ##### * INSERT ALL 无条件插入 同时向两张表插入
     INSERT ALL
         INTO test1(a1, b2 ,c3) VALUES (a1, b2, c3)
@@ -110,7 +113,9 @@
 - 获得一个树结构
 - START WITH 子句为可选项，用来标识哪个节点作为查找树形结构的根节点。
 - 条件2：是连接条件，其中用PRIOR表示上一条记录，例如CONNECT BY PRIOR STUDENT_ID = GRADE_ID    等同于
-    select a.\*, b.\* from a right join b
+```
+select a.*, b.* from a right join b
+```
 
 ##### FULL JOIN
     FULL JOIN 没有（+）的写法
@@ -133,7 +138,10 @@
 ```
     select count(*) from user where usename NOT IN (select u.username from my_user u where u.username IS NOT NULL) 
 ```
-##### - not exist
+##### - not exists 和 exists
+- exists 表示为当（）里面的条件成立的时候 返回 该几行
+- not exists 表示当（）里面的条件不成立的时候 返回 该几行
+```
     create table t1 (c1 number,c2 number);  
     create table t2 (c1 number,c2 number);  
       
@@ -150,9 +158,16 @@
     no rows found  
     select * from t1 where not exists (select 1 from t2 where t1.c2=t2.c2);  
     c1 c2  
-    1 3  
+    1 3 
+```
+
+#### 注：select 1/null 的含义
+- select null 和 select 1 都表示有没有记录返回 一般和 exists 或者 not exists 一起使用
+```
     UPDATE MY_USER t SET t.USERNAME = '你才是智障'
-    WHERE NOT exists(SELECT null FROM MY_USER_BONUS d WHERE d.user_id = t.USER_ID)
+    WHERE NOT exists(SELECT null 或者 1 FROM MY_USER_BONUS d WHERE d.user_id = t.USER_ID)
+```
+
 #### 26.oracle 中表的复制有两种方法
 ##### *将test复制到test2中， 整张表复制，数据加结构
     CREATE TABLE test2 as SELECT * from test;
@@ -431,3 +446,4 @@ round((a / b) * 100, 2) || '%'  =>30.14%
     select deptno, empno, sal, round(ratio_to_report(sal) over(partition by deptno) * 100, 2) as amount_rate from emp order by deptno, empno;
 ```
 #### 6.11 trunc(dbms.random.value(1, 7)) 取整函数 对1到7的随机值进行直接取整， 不取舍。
+#### 
