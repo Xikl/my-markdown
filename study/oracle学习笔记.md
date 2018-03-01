@@ -168,14 +168,22 @@ select a.*, b.* from a right join b
     WHERE NOT exists(SELECT null 或者 1 FROM MY_USER_BONUS d WHERE d.user_id = t.USER_ID)
 ```
 
--- 笔记 回顾 到这里
 #### 26.oracle 中表的复制有两种方法
 ##### *将test复制到test2中， 整张表复制，数据加结构
     CREATE TABLE test2 as SELECT * from test;
 ##### *将test表格的定义复制到test2中，即空表没有数据
     create TABLE test2 as SELECT * FROM test WHERE 1 = 2;
 #### 27.oracle中的约束CONSTRAINT 
-    ALTER table emp add CONSTRAINT ch_sal CHECK (sal > 0)  
+    ALTER table emp add CONSTRAINT ch_sal CHECK (sal > 0) 
+- alter 模式
+```
+alter table userInfo add(msn varchar2(20)); //添加字段
+alter table userInfo modify(msn varchar2(25)); // 修改字段长度
+alter table userInfo drop(msn); //删除字段
+alter table userInfo drop constraint pk_id; // 删除约束
+alter table userInfo add constraint pk_id primary key (id); //添加主键约束
+```
+
 #### 28.WITH CHECK OPTION -- 被看做视图
     里面的条件要满足才能继续操作,下面的会执行失败
     insert into (select a, b from user where a != b with check option) values ('tset', 'test2');
@@ -211,10 +219,14 @@ select a.*, b.* from a right join b
 ##### - 通过name相同 行号rowid不同的方式来判定 只需要建立单个id索引
     主键是有索引的 加个鬼哦 
     create index idx_id on my_user (user_id)
-##### - 留user_id的最小值
+##### - 留user_id的最小值 
+- rowid 是 依次递增的 所以想要删除最小的 可以把最大的删除 
+```
     DELETE FROM MY_USER a WHERE
     exists(SELECT null FROM MY_USER b WHERE a.USERNAME = b.USERNAME AND a.ROWID > b.ROWID)
-##### - oracle 中组内排序
+```
+
+##### - oracle 中组内排序 
     SELECT row_number() OVER
     (PARTITION BY USERNAME ORDER BY HEIGHT DESC ) id, USER_ID, GENDER, USERNAME FROM MY_USER
 
@@ -228,6 +240,9 @@ select a.*, b.* from a right join b
     DELETE FROM MY_USER WHERE ROWID IN (
     SELECT rid from (SELECT ROWID as rid, row_number() OVER (PARTITION BY USERNAME ORDER BY HEIGHT ASC ) seq FROM MY_USER)
     WHERE seq > 1)
+
+-- 笔记 回顾 到这里
+    
 #### 37.oracle中LEVEL的使用, 用于遍历字符串 level <= (str)
     SELECT LEVEL from dual CONNECT BY LEVEL <= 4;
     SELECT LEVEL, substr('天天向上', LEVEL, 1) as fun FROM dual CONNECT BY LEVEL <= length('天天向上');
