@@ -32,3 +32,42 @@
 ```
     git push -u origin master -f 
 ```
+
+#### 10.将origin master  关联起来
+```
+git push -u origin master
+```
+#### 11. 使用https除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用ssh协议而只能用https。
+- Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快。
+
+#### 12.创建分支
+- 创建分支
+```
+git checkout -b dev  
+```
+- git checkout命令加上-b参数表示创建并切换，相当于以下两条命令：
+```
+git branch dev
+git checkout dev
+```
+- 使用 git branch 查看分支
+- 合并分支中的操作 
+```
+git merge dev
+```
+- 注 操作合计：
+```
+Git鼓励大量使用分支：
+
+查看分支：git branch
+
+创建分支：git branch <name>
+
+切换分支：git checkout <name>
+
+创建+切换分支：git checkout -b <name>
+
+合并某分支到当前分支：git merge <name>
+
+删除分支：git branch -d <name>
+```
