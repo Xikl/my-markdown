@@ -1,9 +1,9 @@
 #### 1.replace('abcde', 'a', null) 替换函数 => bcde
 #### 2.greatest() 查找最大值
-#### 3.创建视图文件 
-    CREATE OR REPLACE VIEW V_zwz_test as 查询1 union all 查询2 
+#### 3.创建视图文件
+    CREATE OR REPLACE VIEW V_zwz_test as 查询1 union all 查询2
     - union all 合并多个查询的值，可以有重复的项 union 不能有重复的
-	- union 和 union all的区别 
+	- union 和 union all的区别
 		-union 会去重，就算单个结果集中的重复集合也会被去除，
 #### 4.coalesce 返回第一个不为空的值
 #### 5.子查询中，别名的使用：若
@@ -26,7 +26,7 @@
 - substr(字符串,截取开始位置,截取长度)
 - substr(USERNAME, -2，1) 截取字符 -2表示从倒数第二的位置截取 1 表示 截取长度为1
 
-#### 12.int 和 number 、Integer的异同 
+#### 12.int 和 number 、Integer的异同
     - oracle 中本来就没有int类型，只是为了和别的数据库进行兼容，
 	- int相当于number(22)
     一般不采用这样会造成字段空间的浪费。number可以设置各种类型比如说mysql中的
@@ -34,7 +34,7 @@
 	- oracle 中 decimail(8, 2) 其实就是number类型 如999999.99
 #### 13.Oracle to_date 用法
      create_time &lt;= to_date(':createTimeEnd'||' 23:59:59','YYYY-MM-DD hh24:mi:ss')
-*注意 时间 格式化 秒的部分是 mi 不是像java中的mm 其中 || 是sql中字符拼接* 
+*注意 时间 格式化 秒的部分是 mi 不是像java中的mm 其中 || 是sql中字符拼接*
 #### 14.translate() 函数
     SELECT translate('ab 你好 bcdef', 'abcdef', '123456') as new_str from dual;
     分析：a被1替代，b被2替代，依次类推 => 结果为 12你好3456
@@ -45,17 +45,17 @@
 - 分析可得 凡是 ',' 的位置都被替换为',' 其他的部分由于没有值，则为空，   
 - 结果为',,,'
 
-#### 15.字符串拼接函数 || conact()的异同 
-    -concat 只能连接两个字符， 如果有需要需要嵌套 concat(str1, concat(str2, str3)). 
+#### 15.字符串拼接函数 || conact()的异同
+    -concat 只能连接两个字符， 如果有需要需要嵌套 concat(str1, concat(str2, str3)).
     - || 可以随意拼接，没有限制
-#### 16.nvl(str, -1) 
+#### 16.nvl(str, -1)
     若str不存在则为-1，存在则不变 nvl2(str, 0, -1) str为空则为0， 不为空则为1
 #### 17.NULLS FIRST/LAST
     根据NULLS FIRST/LAST 来排序空值 ，当然你要对空值那一列进行order by,对没有空值的列进行排序然后进行NULLS FIRST或者FIRST 那将毫无意义
-#### 18.oracle中插入多条 
-    INSERT ALL 
+#### 18.oracle中插入多条
+    INSERT ALL
     INTO MY_USER (USERNAME, PWD, HEIGHT, GENDER) VALUES ('ximo', '12', '151', '0')
-    INTO MY_USER(USERNAME, PWD, HEIGHT, GENDER) VALUES ('mmm', '180', '4444', '1') 
+    INTO MY_USER(USERNAME, PWD, HEIGHT, GENDER) VALUES ('mmm', '180', '4444', '1')
     SELECT 1 from dual;
 ##### * INSERT ALL 无条件插入 同时向两张表插入
     INSERT ALL
@@ -70,34 +70,34 @@
         INTO test2(a1, b2, d4) VALUES (a1, b2, d4)
     SELECT a1, b2, c3, d4 FROM master_test;
 ##### * INSERT FIRST 当第一个表条件满足时，第二个表不在插入对应的行
-    INSERT FIRST 
+    INSERT FIRST
       WHEN c3 IN ('c31', 'c32') THEN
         INTO test1(a1, b2, c3) VALUES (a1, b2, c3)
       WHEN  b2 < 456 THEN
         INTO test2(a1, b2, d4) VALUES (a1, b2, d4)
     SELECT a1, b2, c3, d4 FROM master_test;
-##### * 转置 insert 
-    insert all 
+##### * 转置 insert
+    insert all
         into test2(a1, des) values('周一'， e1)
         into test2(a1, des) values('周二'， e2)
         into test2(a1, des) values('周三'， e3)
     select e1, e2, e3 from test2;
 #### 19.oracle中空字符串
     常常相当于null select '' as str from dual  但是 空字符'' 是varchar2类型 ，而null则可以为任何类型
-#### 20.oracle中 or 和 union 
+#### 20.oracle中 or 和 union
     二者在一定条件的时候可以互换 ，但是当结果集中有重复集的时候，就需要一定的转化
 	一般遇到有重复集的时候，一般可以添加一个不重复的字段 来表示它不唯一， 然后作为一个子查询 ，在查询出来！这个值可以是唯一主键，也可以是row_id
-#### 21.ROWNUM 和 rowid的区别 
+#### 21.ROWNUM 和 rowid的区别
     rownum 是一个伪列,且是一个唯一的，可以说是先查找数据，然后再加上去唯id
     一般只支持<、<=、!= 并非说用>,& gt;=,=,between..and 时会提示SQL语法错误，而是经常是查不出一条记录来，还会出现似乎是莫名其妙的结果来
     rowid 是物理存在的，很多rownum会出现的问题，都可以解决
 #### 22.组织相关的行
-##### inner join 
+##### inner join
     SELECT L.str left_str, R.str right_str FROM L INNER JOIN R on L.v = R.v
         ORDER BY 1, 2;
     SELECT L.str left_str, R.str right_str FROM L, R WHERE L.v = R.v
         ORDER BY 1, 2;
-##### left join 
+##### left join
     SELECT a.*, b.* from a = b(+)就是一个左连接
     等同于
     select a.*, b.* from a left join b
@@ -105,7 +105,7 @@
     - on后面的是连接的条件 ，一般过滤的条件都是在这个里面
     - where 一般都是些对结果集的采集
 
-##### right join 
+##### right join
     SELECT a.*, b.* from a(+) = b就是一个右连接
 #### 24.oracle 中start with
     START WITH... CONNECT BY PRIOR...
@@ -133,10 +133,10 @@ select a.*, b.* from a right join b
 
 #### 25.oracle 子查询
 ##### - not in
-    select count(*) from user where usename NOT IN (select u.username from my_user u) 
+    select count(*) from user where usename NOT IN (select u.username from my_user u)
  如果子查询中包含空值，所以 NOT IN(空值) 返回空 故count(*)为零条所以必须加上（子查询中）where u.username IS NOT NULL;
 ```
-    select count(*) from user where usename NOT IN (select u.username from my_user u where u.username IS NOT NULL) 
+    select count(*) from user where usename NOT IN (select u.username from my_user u where u.username IS NOT NULL)
 ```
 ##### - not exists 和 exists
 - exists 表示为当（）里面的条件成立的时候 返回 该几行
@@ -144,7 +144,7 @@ select a.*, b.* from a right join b
 ```
     create table t1 (c1 number,c2 number);  
     create table t2 (c1 number,c2 number);  
-      
+
     insert into t1 values (1,2);  
     insert into t1 values (1,3);  
     insert into t2 values (1,2);  
@@ -153,12 +153,12 @@ select a.*, b.* from a right join b
     t1: c1 c2   t2: c1 c2
         1  2        1  2
         1  3        1  null
-      
+
     select * from t1 where c2 not in (select c2 from t2);  
     no rows found  
     select * from t1 where not exists (select 1 from t2 where t1.c2=t2.c2);  
     c1 c2  
-    1 3 
+    1 3
 ```
 
 #### 注：select 1/null 的含义
@@ -169,12 +169,12 @@ select a.*, b.* from a right join b
 ```
 
 #### 26.oracle 中表的复制有两种方法
-##### *将test复制到test2中， 整张表复制，数据加结构
+##### * 将test复制到test2中， 整张表复制，数据加结构
     CREATE TABLE test2 as SELECT * from test;
-##### *将test表格的定义复制到test2中，即空表没有数据
+##### * 将test表格的定义复制到test2中，即空表没有数据
     create TABLE test2 as SELECT * FROM test WHERE 1 = 2;
-#### 27.oracle中的约束CONSTRAINT 
-    ALTER table emp add CONSTRAINT ch_sal CHECK (sal > 0) 
+#### 27.oracle中的约束CONSTRAINT
+    ALTER table emp add CONSTRAINT ch_sal CHECK (sal > 0)
 - alter 模式
 ```
 alter table userInfo add(msn varchar2(20)); //添加字段
@@ -217,16 +217,16 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
     DELETE FROM MY_USER a WHERE
       exists(SELECT NULL FROM MY_USER b WHERE a.USERNAME = b.USERNAME AND a.USER_ID > b.USER_ID)
 ##### - 通过name相同 行号rowid不同的方式来判定 只需要建立单个id索引
-    主键是有索引的 加个鬼哦 
+    主键是有索引的 加个鬼哦
     create index idx_id on my_user (user_id)
-##### - 留user_id的最小值 
-- rowid 是 依次递增的 所以想要删除最小的 可以把最大的删除 
+##### - 留user_id的最小值
+- rowid 是 依次递增的 所以想要删除最小的 可以把最大的删除
 ```
     DELETE FROM MY_USER a WHERE
     exists(SELECT null FROM MY_USER b WHERE a.USERNAME = b.USERNAME AND a.ROWID > b.ROWID)
 ```
 
-##### - oracle 中组内排序 
+##### - oracle 中组内排序
     SELECT row_number() OVER
     (PARTITION BY USERNAME ORDER BY HEIGHT DESC ) id, USER_ID, GENDER, USERNAME FROM MY_USER
 
@@ -242,7 +242,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
     WHERE seq > 1)
 
 -- 笔记 回顾 到这里
-    
+
 #### 37.oracle中LEVEL的使用, 用于遍历字符串 level <= (str)
     SELECT LEVEL from dual CONNECT BY LEVEL <= 4;
     SELECT LEVEL, substr('天天向上', LEVEL, 1) as fun FROM dual CONNECT BY LEVEL <= length('天天向上');
@@ -262,7 +262,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 ```
 
 #### 40.oracle中regexp_count() 注：11g特有的函数 dataGrip会标黄
-    SELECT regexp_count(str, ',') + 1 as count FROM 
+    SELECT regexp_count(str, ',') + 1 as count FROM
     (SELECT 'clack,king,meiller' as str from dual)
 #### 41.oracle中字符串中有多个分隔符时， 使用translate要 除以 分隔符的长度
     SELECT length(translate(str, '$#' || str, '$#')) / length('$#') + 1 as count from (SELECT 'ab$#sss$#dsa' as str FROM dual)
@@ -275,7 +275,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 #### 42.删除字符串中不需要的值
 - 如现在需要删除名字中的aeiou 元音值
     + 一般做法
-``` 
+```
     replace(translate(ename, 'aeiou', 'aaaaa'), 'a', '')
 ```
     + 进阶做法 不需要嵌套
@@ -287,7 +287,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
     regexp_replace(ename, '[aeiou]')
 ```
 
-#### 43.oracle 中没有top limit关键字（很绝望） 
+#### 43.oracle 中没有top limit关键字（很绝望）
 # 新的一天 新的开始 2018-01-02
 #### 44.oracle中正则表达式的使用 regexp_replace
     regexp_replace(data, '[0-9]', '');
@@ -309,14 +309,14 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 
 #### 47.oracle中listagg（） with group（）用法
     SELECT ID, listagg(NAME, ',') within group(ORDER BY ID) AS NAMES
-      FROM DEMO T 
+      FROM DEMO T
      GROUP BY ID
 - 具体请参见 http://blog.csdn.net/baojiangfeng/article/details/62237522
 - 具体请参见 oracle查询优化改写 P106的部分
 - 分析 ORDER BY USERNAME DESC 中表示 里面按照 名字的降序来排列 如 B,C,D
 - 以pwd 密码为分组，将密码相同的人的名字放在一起，很实用的方法
 ```
-    SELECT PWD, listagg(username, ',') WITHIN GROUP(ORDER BY USERNAME DESC) as new_name FROM MY_USER GROUP BY PWD 
+    SELECT PWD, listagg(username, ',') WITHIN GROUP(ORDER BY USERNAME DESC) as new_name FROM MY_USER GROUP BY PWD
 ```
 - listagg的高级用法 和 level来使用
     + 将my_user中的username 去重 加排序
@@ -330,9 +330,9 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 ```
 
 #### 48.oracle中 instr的用法
-- 可以使用instr函数对某个字符串进行判断，判断其是否含有指定的字符。 
-- instr(sourceString,destString,start,appearPosition) 
-- instr（'源字符串' , '目标字符串' ,'开始位置','第几次出现'） 
+- 可以使用instr函数对某个字符串进行判断，判断其是否含有指定的字符。
+- instr(sourceString,destString,start,appearPosition)
+- instr（'源字符串' , '目标字符串' ,'开始位置','第几次出现'）
 
 #### 49.oracle中regexp_substr的用法
 - regexp_substr(name, '\[^,]+', 1, 2)
@@ -379,7 +379,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
     private Date modifiedTime;
 ```
 - 1. 创建时间不更新  添加注解@Column(updatable = false)
-- 2. @DynamicInsert 和 @DynamicUpdate注解的使用 
+- 2. @DynamicInsert 和 @DynamicUpdate注解的使用
     + @DynamicInsert 前者如果这个字段的值是null就不会加入到insert语句当中.默认false。
     @DynamicInsert注解下Hibernate日志打印SQL：
     ```
@@ -402,7 +402,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 #### 6.2 sum() over() 累计求和
     select empno as 员工编号, sal as 人工成本,  SUM(sal) over(order by empno) as 成本累计 from emp where deptno = 30 order by empno;
 #### 6.3 with x as ()
-#### 6.4 rank over () 可以实现对学生排名，特点是成绩相同的两名是并列，如下1 2 2 4 5 
+#### 6.4 rank over () 可以实现对学生排名，特点是成绩相同的两名是并列，如下1 2 2 4 5
 - 详情看 http://www.linuxidc.com/Linux/2015-04/116349.htm
 ```
     select name,
@@ -435,11 +435,11 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
     WHERE dens_rank <= 3;
 ```
 
-#### 6.6 oracle 中max 的用法 
+#### 6.6 oracle 中max 的用法
 - 不仅可以用于 数字类型 还可以用于 字符串 以及 日期类型
 
 #### 6.7 kepp(dense_rank() last/first order by amount)
-- 分析函数 
+- 分析函数
 ```
     SELECT
       project,
@@ -452,8 +452,8 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 ```
 
 #### 6.8 first_value() last_value()
-#### 6.9 sum() over() 
-- 其中 over 中 啥也不写 就是 对所有的值得汇总 
+#### 6.9 sum() over()
+- 其中 over 中 啥也不写 就是 对所有的值得汇总
 - 如： select sum_sal, sum(sum_sal) over()
 
 #### 6.10 round() 函数
@@ -462,4 +462,4 @@ round((a / b) * 100, 2) || '%'  =>30.14%
     select deptno, empno, sal, round(ratio_to_report(sal) over(partition by deptno) * 100, 2) as amount_rate from emp order by deptno, empno;
 ```
 #### 6.11 trunc(dbms.random.value(1, 7)) 取整函数 对1到7的随机值进行直接取整， 不取舍。
-#### 
+####
