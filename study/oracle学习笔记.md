@@ -398,7 +398,7 @@ alter table userInfo add constraint pk_id primary key (id); //添加主键约束
 
 ### 第六章 使用数字
 #### 6.1 常用的聚集函数
-    AVG(sal), min(sal), max(sal), sum(sal), count(*)
+    AVG(sal), min(sal), max(sal), sum(sal), count(\*)
 #### 6.2 sum() over() 累计求和
     select empno as 员工编号, sal as 人工成本,  SUM(sal) over(order by empno) as 成本累计 from emp where deptno = 30 order by empno;
 #### 6.3 with x as ()
@@ -462,4 +462,26 @@ round((a / b) * 100, 2) || '%'  =>30.14%
     select deptno, empno, sal, round(ratio_to_report(sal) over(partition by deptno) * 100, 2) as amount_rate from emp order by deptno, empno;
 ```
 #### 6.11 trunc(dbms.random.value(1, 7)) 取整函数 对1到7的随机值进行直接取整， 不取舍。
-####
+#### 6.12 nvl() 和 decode()
+- NVL(E1, E2)的功能为：如果E1为NULL，则函数返回E2，否则返回E1本身。
+- NVL2(E1, E2, E3)的功能为：如果E1为NULL，则函数返回E3，若E1不为null，则返回E2。
+- DECODE(value,if1,then1,if2,then2,if3,then3,...,else)
+```
+含义为
+IF 条件=值1 THEN
+　　　　RETURN(value 1)
+ELSIF 条件=值2 THEN
+　　　　RETURN(value 2)
+　　　　......
+ELSIF 条件=值n THEN
+　　　　RETURN(value 3)
+ELSE
+　　　　RETURN(default)
+END IF
+```
+#### 6.13 wm_concat
+- 将字符用逗号隔开 连接起来
+```
+select u_id, wmsys.wm_concat(goods) goods_sum from shopping   group by u_id
+```
+#### 6.14 Mandatory 在数据库中相当于not null
