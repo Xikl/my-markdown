@@ -485,3 +485,8 @@ END IF
 select u_id, wmsys.wm_concat(goods) goods_sum from shopping   group by u_id
 ```
 #### 6.14 Mandatory 在数据库中相当于not null
+#### 6.15 concat_ws() 函数
+- 将多个用逗号隔开 然后连接起来
+```
+concat_ws(',','11','22','33');
+```
