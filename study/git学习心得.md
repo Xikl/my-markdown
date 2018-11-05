@@ -71,3 +71,10 @@ Git鼓励大量使用分支：
 
 删除分支：git branch -d <name>
 ```
+```
+git checkout master
+git pull 
+git merge develop
+git status
+git push
+```
